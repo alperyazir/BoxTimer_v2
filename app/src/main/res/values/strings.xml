@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">BoxTimer_v2</string>
+    <string name="rounds" />
+    <string name="timer_00_00" />
+    <string name="brake_02_00" />
+    <string name="work_05_00" />
+    <string name="done">Done</string>
+</resources>
