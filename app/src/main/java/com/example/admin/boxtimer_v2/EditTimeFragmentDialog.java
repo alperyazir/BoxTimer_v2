@@ -26,11 +26,22 @@ public class EditTimeFragmentDialog extends DialogFragment {
     private EditText editTextMin;
     private EditText editTextSec;
 
+    public int min = 0;
+    public int sec = 0;
+
+
     // 1. Defines the listener interface with a method passing back data result.
     public interface EditNameDialogListener {
         void onFinishEditDialog(String inputText);
     }
 
+    // Call this method to send the data back to the parent fragment
+    public void sendBackResult() {
+        // Notice the use of `getTargetFragment` which will be set when the dialog is displayed
+        EditNameDialogListener listener = (EditNameDialogListener) getTargetFragment();
+        listener.onFinishEditDialog(buttonIncreaseMin.getText().toString());
+        dismiss();
+    }
 
     public EditTimeFragmentDialog() {
     }
@@ -40,12 +51,18 @@ public class EditTimeFragmentDialog extends DialogFragment {
         Bundle args = new Bundle();
         args.putString("title", title);
         frag.setArguments(args);
-        return frag;
+                return frag;
+    }
+
+    public void setVal(int i){
+        min = i;
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         return inflater.inflate(R.layout.activity_edit_time_fragment_dialog, container);
     }
 
@@ -56,6 +73,13 @@ public class EditTimeFragmentDialog extends DialogFragment {
         editTextMin = (EditText) view.findViewById(R.id.editTextDialogMin);
         editTextSec = (EditText) view.findViewById(R.id.editTextDialogSec);
         buttonDone = (Button)    view.findViewById(R.id.buttonDialogDone);
+
+        buttonIncreaseMin = (Button)    view.findViewById(R.id.buttonIncreaseMin);
+        buttonIncreaseSec = (Button)    view.findViewById(R.id.buttonIncreaseSec);
+        buttonDecreaseMin = (Button)    view.findViewById(R.id.buttonDecreaseMin);
+        buttonDecreaseSec = (Button)    view.findViewById(R.id.buttonDecreaseSec);
+
+        editTextMin.setText(""+min);
         // Fetch arguments from bundle and set title
         String title = getArguments().getString("title", "Enter Name");
         getDialog().setTitle(title);
@@ -69,6 +93,40 @@ public class EditTimeFragmentDialog extends DialogFragment {
             }
         });
 
+
+        buttonIncreaseMin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        buttonIncreaseSec.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        buttonDecreaseMin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        buttonDecreaseSec.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
     }
+
+
+
+
+
 
 }
