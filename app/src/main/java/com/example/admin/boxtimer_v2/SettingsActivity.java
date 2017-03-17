@@ -22,6 +22,10 @@ public class SettingsActivity extends AppCompatActivity implements EditTimeFragm
     public TextView textWorkout;
     public TextView textBrake;
     public String incomingInterval="";
+
+    public int minute = 0;
+    public int second = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +48,8 @@ public class SettingsActivity extends AppCompatActivity implements EditTimeFragm
         brakeClicked=false;
         FragmentManager fm = getSupportFragmentManager();
         EditTimeFragmentDialog alertDialog = EditTimeFragmentDialog.newInstance("Rounds");
-        alertDialog.setVal(14);
+        alertDialog.isRound(true);
+        alertDialog.setRoundTime(14);
         alertDialog.show(fm, "fragment_alert");
 
     }
@@ -55,7 +60,8 @@ public class SettingsActivity extends AppCompatActivity implements EditTimeFragm
         brakeClicked=false;
         FragmentManager fm = getSupportFragmentManager();
         EditTimeFragmentDialog alertDialog = EditTimeFragmentDialog.newInstance("Workout");
-//        alertDialog.setVal(5);
+
+        alertDialog.setTime(getTimeAsSeconds(textWorkout.getText().toString())/60,getTimeAsSeconds(textWorkout.getText().toString())%60);
         alertDialog.show(fm, "fragment_alert");
     }
 
@@ -66,22 +72,36 @@ public class SettingsActivity extends AppCompatActivity implements EditTimeFragm
 
         FragmentManager fm = getSupportFragmentManager();
         EditTimeFragmentDialog alertDialog = EditTimeFragmentDialog.newInstance("Brake");
-//        alertDialog.setVal(2);
+        alertDialog.setTime(getTimeAsSeconds(textBrake.getText().toString())/60,getTimeAsSeconds(textBrake.getText().toString())%60);
         alertDialog.show(fm, "fragment_alert");
     }
 
     @Override
     public void onFinishEditDialog(String inputText) {
         incomingInterval = inputText;
+        minute = Integer.parseInt(incomingInterval)/60;
+        second = Integer.parseInt(incomingInterval)%60;
+
         if(roundClicked){
-            textRound.setText(incomingInterval);
+            textRound.setText(String.format("%02d",minute) + ":" + String.format("%02d", second));
         }
         else if(workoutClicked){
-            textWorkout.setText(incomingInterval);
+
+            textWorkout.setText(String.format("%02d",  minute) + ":" + String.format("%02d", second));
         }
         else if(brakeClicked){
-            textBrake.setText(incomingInterval);
+            textBrake.setText(String.format("%02d", minute) + ":" + String.format("%02d", second));
         }
     }
 
+    public int getTimeAsSeconds(String str){
+
+       return Integer.parseInt(""+ str.charAt(0)+str.charAt(1))*60 + Integer.parseInt(""+ str.charAt(3)+str.charAt(4));
+    }
+
 }
+
+
+
+
+

@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 public class EditTimeFragmentDialog extends DialogFragment {
 
-
+    private boolean isDialogRound = false;
     private Button buttonIncreaseMin;
     private Button buttonIncreaseSec;
     private Button buttonDecreaseMin;
@@ -26,8 +26,10 @@ public class EditTimeFragmentDialog extends DialogFragment {
     private EditText editTextMin;
     private EditText editTextSec;
 
+    public int round = 0;
     public int min = 0;
     public int sec = 0;
+    public int totalTime = 0;
 
 
     // 1. Defines the listener interface with a method passing back data result.
@@ -54,10 +56,14 @@ public class EditTimeFragmentDialog extends DialogFragment {
                 return frag;
     }
 
-    public void setVal(int i){
-        min = i;
-
+    public void setTime(int mi,int se){
+        min = mi;
+        sec = se;
+   }
+    public void setRoundTime(int ra){
+        round = ra;
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -79,7 +85,14 @@ public class EditTimeFragmentDialog extends DialogFragment {
         buttonDecreaseMin = (Button)    view.findViewById(R.id.buttonDecreaseMin);
         buttonDecreaseSec = (Button)    view.findViewById(R.id.buttonDecreaseSec);
 
-        editTextMin.setText(""+min);
+        if(isDialogRound){
+            editTextSec.setVisibility(view.INVISIBLE);
+            buttonDecreaseSec.setVisibility(view.INVISIBLE);
+            buttonIncreaseSec.setVisibility(view.INVISIBLE);
+        }
+        editTextMin.setText(String.format("%02d", min));
+        editTextSec.setText(String.format("%02d", sec));
+
         // Fetch arguments from bundle and set title
         String title = getArguments().getString("title", "Enter Name");
         getDialog().setTitle(title);
@@ -88,7 +101,8 @@ public class EditTimeFragmentDialog extends DialogFragment {
             @Override
             public void onClick(View v) {
                 EditNameDialogListener listener = (EditNameDialogListener) getActivity();
-                listener.onFinishEditDialog(editTextMin.getText().toString() +":"+ editTextSec.getText().toString() );
+                totalTime = Integer.parseInt(editTextMin.getText().toString())*60 + Integer.parseInt(editTextSec.getText().toString());
+                listener.onFinishEditDialog(""+totalTime);
                 dismiss();
             }
         });
@@ -97,31 +111,48 @@ public class EditTimeFragmentDialog extends DialogFragment {
         buttonIncreaseMin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if(++min > 59){
+                    min = 0;
+                }
+                    editTextMin.setText(String.format("%02d", min));
             }
         });
 
         buttonIncreaseSec.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if(++sec > 59){
+                    sec = 0;
+                }
+            editTextSec.setText(String.format("%02d", sec));
             }
         });
 
         buttonDecreaseMin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(--min < 0){
+                    min = 59;
+                }
 
+                editTextMin.setText(String.format("%02d", min));
             }
         });
 
         buttonDecreaseSec.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if(--sec < 0){
+                    sec = 59;
+                }
+                editTextSec.setText(String.format("%02d", sec));
             }
         });
 
+    }
+
+    public void isRound(boolean b){
+        isDialogRound = b;
     }
 
 
