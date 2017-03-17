@@ -46,6 +46,7 @@ public class SettingsActivity extends AppCompatActivity implements EditTimeFragm
         EditTimeFragmentDialog alertDialog = EditTimeFragmentDialog.newInstance("Rounds");
         alertDialog.setVal(14);
         alertDialog.show(fm, "fragment_alert");
+
     }
 
     public void buttonWorkoutClicked(View view){
@@ -54,7 +55,7 @@ public class SettingsActivity extends AppCompatActivity implements EditTimeFragm
         brakeClicked=false;
         FragmentManager fm = getSupportFragmentManager();
         EditTimeFragmentDialog alertDialog = EditTimeFragmentDialog.newInstance("Workout");
-        alertDialog.setVal(5);
+//        alertDialog.setVal(5);
         alertDialog.show(fm, "fragment_alert");
     }
 
@@ -65,7 +66,7 @@ public class SettingsActivity extends AppCompatActivity implements EditTimeFragm
 
         FragmentManager fm = getSupportFragmentManager();
         EditTimeFragmentDialog alertDialog = EditTimeFragmentDialog.newInstance("Brake");
-        alertDialog.setVal(2);
+//        alertDialog.setVal(2);
         alertDialog.show(fm, "fragment_alert");
     }
 
