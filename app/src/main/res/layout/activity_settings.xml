@@ -40,12 +40,9 @@
         app:layout_constraintTop_toBottomOf="@+id/buttonWorkout"
         android:layout_marginLeft="0dp"
         app:layout_constraintLeft_toLeftOf="@+id/buttonWorkout"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="8dp"
         android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintVertical_bias="0.007" />
+        app:layout_constraintHorizontal_bias="0.0" />
 
     <TextView
         android:id="@+id/textViewRound"
@@ -76,4 +73,60 @@
         android:text="00:00"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewWorkout" />
+
+    <TextView
+        android:id="@+id/textViewWarning"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="27dp"
+        android:text="00:00"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewBrake" />
+
+    <Button
+        android:id="@+id/buttonWarning"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="9dp"
+        android:layout_marginTop="10dp"
+        android:onClick="buttonWarningClicked"
+        android:text="Warning"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonBrake" />
+
+    <TextView
+        android:id="@+id/textViewReady"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="42dp"
+        android:text="00:00"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewWarning" />
+
+    <Button
+        android:id="@+id/buttonReady"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="0dp"
+        android:layout_marginRight="9dp"
+        android:layout_marginTop="8dp"
+        android:onClick="buttonReadyClicked"
+        android:text="Ready"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonWarning"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/buttonSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:onClick="buttonSaveClicked"
+        android:text="Save"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 </android.support.constraint.ConstraintLayout>

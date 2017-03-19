@@ -60,8 +60,9 @@ public class EditTimeFragmentDialog extends DialogFragment {
         min = mi;
         sec = se;
    }
-    public void setRoundTime(int ra){
-        round = ra;
+
+    public void setTime(int mi){
+        min = mi;
     }
 
 
@@ -85,13 +86,15 @@ public class EditTimeFragmentDialog extends DialogFragment {
         buttonDecreaseMin = (Button)    view.findViewById(R.id.buttonDecreaseMin);
         buttonDecreaseSec = (Button)    view.findViewById(R.id.buttonDecreaseSec);
 
-        if(isDialogRound){
-            editTextSec.setVisibility(view.INVISIBLE);
-            buttonDecreaseSec.setVisibility(view.INVISIBLE);
-            buttonIncreaseSec.setVisibility(view.INVISIBLE);
-        }
         editTextMin.setText(String.format("%02d", min));
         editTextSec.setText(String.format("%02d", sec));
+
+        if(isDialogRound){
+            editTextSec.setVisibility(view.GONE);
+            buttonDecreaseSec.setVisibility(view.GONE);
+            buttonIncreaseSec.setVisibility(view.GONE);
+        }
+
 
         // Fetch arguments from bundle and set title
         String title = getArguments().getString("title", "Enter Name");
