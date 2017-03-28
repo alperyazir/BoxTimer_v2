@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,10 +23,10 @@ public class SettingsActivity extends AppCompatActivity implements EditTimeFragm
     public boolean readyClicked=false;
 
     public Button buttonRound;
-    public Button buttonWorkout;
-    public Button buttonBrake;
-    public Button buttonWarning;
-    public Button buttonReady;
+    public ImageButton buttonWorkout;
+    public ImageButton buttonBrake;
+    public ImageButton buttonWarning;
+    public ImageButton buttonReady;
 
     public TextView textRound;
     public TextView textWorkout;
@@ -49,11 +50,11 @@ public class SettingsActivity extends AppCompatActivity implements EditTimeFragm
 
         setContentView(R.layout.activity_settings);
 
-        buttonRound     = (Button) findViewById(R.id.buttonRound);
-        buttonWorkout   = (Button) findViewById(R.id.buttonWorkout);
-        buttonBrake     = (Button) findViewById(R.id.buttonBrake);
-        buttonWarning   = (Button) findViewById(R.id.buttonWarning);
-        buttonReady     = (Button) findViewById(R.id.buttonReady);
+      //  buttonRound     = (Button) findViewById(R.id.buttonRound);
+        buttonWorkout   = (ImageButton) findViewById(R.id.buttonWorkout);
+        buttonBrake     = (ImageButton) findViewById(R.id.buttonBrake);
+        buttonWarning   = (ImageButton) findViewById(R.id.buttonWarning);
+        buttonReady     = (ImageButton) findViewById(R.id.buttonReady);
 
         textRound       = (TextView) findViewById(R.id.textViewRound);
         textWorkout     = (TextView) findViewById(R.id.textViewWorkout);
