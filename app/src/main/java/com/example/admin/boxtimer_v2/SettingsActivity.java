@@ -1,6 +1,9 @@
 package com.example.admin.boxtimer_v2;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -9,10 +12,14 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 
 public class SettingsActivity extends AppCompatActivity implements EditTimeFragmentDialog.EditNameDialogListener {
 
@@ -47,8 +54,11 @@ public class SettingsActivity extends AppCompatActivity implements EditTimeFragm
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_settings);
+
+
+
 
       //  buttonRound     = (Button) findViewById(R.id.buttonRound);
         buttonWorkout   = (ImageButton) findViewById(R.id.buttonWorkout);
@@ -85,6 +95,66 @@ public class SettingsActivity extends AppCompatActivity implements EditTimeFragm
         alertDialog.setTime(Integer.parseInt(textRound.getText().toString()));
         alertDialog.show(fm, "fragment_alert");
 
+    }
+    public void buttonRoundDecreaseClicked(View view){
+        int round = Integer.parseInt(textRound.getText().toString()) -1;
+        if(round < 0)
+            round  = 0;
+
+        textRound.setText(String.format("%02d", round));
+    }
+    public void buttonRoundIncreaseClicked(View view){
+        int round = Integer.parseInt(textRound.getText().toString()) +1;
+        textRound.setText(String.format("%02d", round));
+    }
+    public void buttonWorkoutDecreaseClicked(View view){
+        int workout = getTimeAsSeconds(textWorkout.getText().toString())-10;
+        if(workout < 0)
+            workout  = 0;
+
+        textWorkout.setText(String.format("%02d", (workout)/60) + ":" + String.format("%02d", (workout)%60) );
+    }
+    public void buttonWorkoutIncreaseClicked(View view){
+        int workout = getTimeAsSeconds(textWorkout.getText().toString())+10;
+
+        textWorkout.setText(String.format("%02d", (workout)/60) + ":" + String.format("%02d", (workout)%60) );
+    }
+    public void buttonBrakeDecreaseClicked(View view){
+        int brake = getTimeAsSeconds(textBrake.getText().toString())-10;
+        if(brake < 0)
+            brake  = 0;
+
+        textBrake.setText(String.format("%02d", (brake)/60) + ":" + String.format("%02d", (brake)%60) );
+    }
+    public void buttonBrakeIncreaseClicked(View view){
+        int brake = getTimeAsSeconds(textBrake.getText().toString())+10;
+
+        textBrake.setText(String.format("%02d", (brake)/60) + ":" + String.format("%02d", (brake)%60));
+    }
+    public void buttonWarningDecreaseClicked(View view){
+        int warning = getTimeAsSeconds(textWarning.getText().toString())-10;
+        if(warning < 0)
+            warning  = 0;
+
+        textWarning.setText(String.format("%02d", (warning)/60) + ":" + String.format("%02d", (warning)%60) );
+    }
+    public void buttonWarningIncreaseClicked(View view){
+        int brake = getTimeAsSeconds(textWarning.getText().toString())+10;
+
+        textWarning.setText(String.format("%02d", (brake)/60) + ":" + String.format("%02d", (brake)%60));
+    }
+    public void buttonReadyDecreaseClicked(View view){
+        int ready = getTimeAsSeconds(textReady.getText().toString())-5;
+        if(ready < 0)
+            ready  = 0;
+
+        textReady.setText(String.format("%02d", (ready)/60) + ":" + String.format("%02d", (ready)%60) );
+    }
+
+    public void buttonReadyIncreaseClicked(View view){
+        int brake = getTimeAsSeconds(textReady.getText().toString())+5;
+
+        textReady.setText(String.format("%02d", (brake)/60) + ":" + String.format("%02d", (brake)%60));
     }
 
     public void buttonWorkoutClicked(View view){
@@ -144,6 +214,8 @@ public class SettingsActivity extends AppCompatActivity implements EditTimeFragm
         intent.putExtra("ready",   ""+getTimeAsSeconds(textReady.getText().toString()));
         startActivity(intent);
         finish();
+
+
     }
     @Override
     public void onFinishEditDialog(String inputText) {

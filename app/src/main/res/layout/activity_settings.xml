@@ -9,6 +9,37 @@
     tools:layout_editor_absoluteY="25dp">
 
     <android.support.constraint.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:id="@+id/constraintLayout">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="0dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="0dp"
+            android:gravity="center"
+            android:text="Settings"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
         android:id="@+id/ConstRound"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -18,19 +49,20 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="8dp">
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
 
         <ImageButton
             android:id="@+id/buttonRoundDecrease"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:layout_weight="1"
+            android:onClick="buttonRoundDecreaseClicked"
             app:layout_constraintBottom_toBottomOf="@+id/textViewRound"
             app:layout_constraintRight_toLeftOf="@+id/buttonRoundIncrease"
             app:layout_constraintTop_toTopOf="@+id/textViewRound"
-            app:layout_constraintVertical_bias="0.523"
             app:srcCompat="@drawable/left" />
 
         <TextView
@@ -54,7 +86,8 @@
         <TextView
             android:id="@+id/textViewRound"
             android:layout_width="0dp"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
@@ -65,12 +98,11 @@
             android:text="0"
             android:textSize="20sp"
             android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/buttonRoundDecrease"
-            app:layout_constraintTop_toBottomOf="@+id/textViewRoundsTag"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="8dp" />
+            app:layout_constraintTop_toBottomOf="@+id/textViewRoundsTag" />
 
         <ImageButton
             android:id="@+id/buttonRoundIncrease"
@@ -78,12 +110,11 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
-            android:layout_marginTop="8dp"
             android:layout_weight="1"
+            android:onClick="buttonRoundIncreaseClicked"
             app:layout_constraintBottom_toBottomOf="@+id/textViewRound"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@+id/textViewRound"
-            app:layout_constraintVertical_bias="0.6"
             app:srcCompat="@drawable/right" />
     </android.support.constraint.ConstraintLayout>
 
@@ -93,12 +124,14 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
         android:background="@android:color/darker_gray"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/ConstRound">
+        app:layout_constraintTop_toBottomOf="@+id/ConstRound"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp">
 
         <TextView
             android:id="@+id/textViewWorkoutTag"
@@ -121,17 +154,19 @@
         <TextView
             android:id="@+id/textViewWorkout"
             android:layout_width="0dp"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="7dp"
+            android:layout_marginTop="8dp"
             android:layout_weight="1"
             android:gravity="center"
             android:text="00:00"
             android:textSize="20sp"
             android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/buttonWorkout"
@@ -153,6 +188,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
+            android:onClick="buttonWorkoutIncreaseClicked"
             app:layout_constraintBottom_toBottomOf="@+id/textViewWorkout"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@+id/textViewWorkout"
@@ -162,6 +198,7 @@
             android:id="@+id/buttonWorkoutDecrease"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="buttonWorkoutDecreaseClicked"
             app:layout_constraintBottom_toBottomOf="@+id/textViewWorkout"
             app:layout_constraintRight_toLeftOf="@+id/buttonWorkoutIncrease"
             app:layout_constraintTop_toTopOf="@+id/textViewWorkout"
@@ -174,13 +211,14 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
+        android:layout_marginTop="7dp"
         android:background="@android:color/darker_gray"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/ConstWarning"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/ConstWorkout">
+        app:layout_constraintTop_toBottomOf="@+id/ConstWorkout"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp">
 
         <ImageButton
             android:id="@+id/buttonBrake"
@@ -213,6 +251,7 @@
             android:id="@+id/buttonBrakeDecrease"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="buttonBrakeDecreaseClicked"
             app:layout_constraintBottom_toBottomOf="@+id/textViewBrake"
             app:layout_constraintRight_toLeftOf="@+id/buttonBrakeIncrease"
             app:layout_constraintTop_toTopOf="@+id/textViewBrake"
@@ -221,7 +260,8 @@
         <TextView
             android:id="@+id/textViewBrake"
             android:layout_width="0dp"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
@@ -232,6 +272,7 @@
             android:text="00:00"
             android:textSize="20sp"
             android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/buttonBrake"
@@ -243,6 +284,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
+            android:onClick="buttonBrakeIncreaseClicked"
             app:layout_constraintBottom_toBottomOf="@+id/textViewBrake"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@+id/textViewBrake"
@@ -258,17 +300,21 @@
         android:background="@android:color/darker_gray"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        tools:layout_editor_absoluteY="317dp">
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/ConstBrake"
+        app:layout_constraintHorizontal_bias="0.0"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp">
 
         <TextView
             android:id="@+id/textViewWarning"
             android:layout_width="0dp"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="7dp"
+            android:layout_marginTop="8dp"
             android:layout_weight="1"
             android:gravity="center"
             android:text="00:00"
@@ -277,7 +323,9 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/buttonWarning"
-            app:layout_constraintTop_toBottomOf="@+id/textViewWarningTag" />
+            app:layout_constraintTop_toBottomOf="@+id/textViewWarningTag"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="8dp" />
 
         <TextView
             android:id="@+id/textViewWarningTag"
@@ -301,6 +349,7 @@
             android:id="@+id/buttonWarningDecrease"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="buttonWarningDecreaseClicked"
             app:layout_constraintBottom_toBottomOf="@+id/textViewWarning"
             app:layout_constraintRight_toLeftOf="@+id/buttonWarningIncrease"
             app:layout_constraintTop_toTopOf="@+id/textViewWarning"
@@ -322,6 +371,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
+            android:onClick="buttonWarningIncreaseClicked"
             app:layout_constraintBottom_toBottomOf="@+id/textViewWarning"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@+id/textViewWarning"
@@ -334,16 +384,20 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
         android:background="@android:color/darker_gray"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/ConstWarning">
+        app:layout_constraintTop_toBottomOf="@+id/ConstWarning"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp">
 
         <TextView
             android:id="@+id/textViewReady"
             android:layout_width="0dp"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
@@ -354,6 +408,7 @@
             android:text="00:00"
             android:textSize="20sp"
             android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/buttonReady"
@@ -375,6 +430,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
+            android:onClick="buttonReadyIncreaseClicked"
             app:layout_constraintBottom_toBottomOf="@+id/textViewReady"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@+id/textViewReady"
@@ -384,10 +440,11 @@
             android:id="@+id/buttonReadyDecrease"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="buttonReadyDecreaseClicked"
             app:layout_constraintBottom_toBottomOf="@+id/textViewReady"
             app:layout_constraintRight_toLeftOf="@+id/buttonReadyIncrease"
             app:layout_constraintTop_toTopOf="@+id/textViewReady"
-            app:layout_constraintVertical_bias="0.0"
+            app:layout_constraintVertical_bias="0.49"
             app:srcCompat="@drawable/left" />
 
         <TextView
@@ -410,19 +467,18 @@
 
     <Button
         android:id="@+id/buttonSave"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:onClick="buttonSaveClicked"
         android:text="Save"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/ConstReady" />
+        app:layout_constraintTop_toBottomOf="@+id/ConstReady"
+        app:layout_constraintVertical_bias="0.3"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
