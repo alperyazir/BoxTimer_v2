@@ -1,6 +1,8 @@
 package com.example.admin.boxtimer_v2;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.speech.tts.TextToSpeech;
@@ -28,9 +30,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView textWork;
     private TextView textBrake;
 
-    String round="14";
-    String workout="300";
-    String brake="120";
+    String round="3";
+    String workout="10";
+    String brake="5";
     String warning="10";
     String ready="5";
 
@@ -100,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
         countDownTimer.start();
         String toSpeak = "Round One";
         textToSpeech.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
-//                playGong();
+        playGong();
     }
 
     public void manageTimer(int seconds) {
@@ -114,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             public void onFinish() {
-
+                playGong();
                 if (brakeMode) {
                     manageTimer(Integer.parseInt(brake));
                     countDownTimer.start();
@@ -122,27 +124,44 @@ public class MainActivity extends AppCompatActivity {
                     //root.setBackgroundColor(Color.RED);
                 } else {
                     roundCounter++;
-                    String toSpeak = "Round " + Integer.toString(roundCounter);
-                    textToSpeech.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
-                    brakeMode = true;
-                    textRounds.setText("" + roundCounter + "/" +String.format("%01d", Integer.parseInt(round)));
-
+                    String toSpeak;
                     if (roundCounter == Integer.parseInt(round)) {
-                        String toSpeakf = "Round Final";
-                        textToSpeech.speak(toSpeakf, TextToSpeech.QUEUE_FLUSH, null);
-                        textTimer.setText("FINISH");
+                        toSpeak= "Round Final";
+                    }
+                    else {
+                         toSpeak = "Round " + Integer.toString(roundCounter);
+                    }
+
+
+                    if (roundCounter > Integer.parseInt(round)) {
                         countDownTimer.cancel();
                     } else {
-//                        playGong();
+
                         manageTimer(Integer.parseInt(workout));
                         countDownTimer.start();
                         //root.setBackgroundColor(Color.GREEN);
                     }
+
+                    textToSpeech.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+                    brakeMode = true;
+                    textRounds.setText("" + roundCounter + "/" +String.format("%01d", Integer.parseInt(round)));
                 }
             }
 
         };
     }
+    public void playGong() {
+        MediaPlayer mp = MediaPlayer.create(this,R.raw.gong );
+        mp.start();
+        mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                mp.release();
+            }
+        });
+    }
+
 
     @Override
     public void onBackPressed() {
