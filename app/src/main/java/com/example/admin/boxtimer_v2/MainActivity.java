@@ -31,17 +31,19 @@ public class MainActivity extends AppCompatActivity {
     private TextView textBrake;
 
     String round="3";
-    String workout="10";
-    String brake="5";
+    String workout="20";
+    String brake="15";
     String warning="10";
     String ready="5";
 
-    boolean brakeMode = true ;
+    boolean brakeMode = false ;
+    boolean readyMode;
     int roundCounter = 1;
 
 
     private CountDownTimer countDownTimer;
     private TextToSpeech textToSpeech;
+    View root ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +52,9 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        View someView = findViewById(R.id.activity_main);
+        root = someView.getRootView();someView.getRootView();
 
         buttonReset = (Button) findViewById(R.id.buttonReset);
         buttonSettings = (Button) findViewById(R.id.buttonSettings);
@@ -82,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         textBrake.setText("Brake "+String.format("%02d", Integer.parseInt(brake)/60) +":"+ String.format("%02d", Integer.parseInt(brake)%60));
         textTimer.setText(""+String.format("%02d", Integer.parseInt(workout)/60) +" "+ String.format("%02d", Integer.parseInt(workout)%60));
 
-        manageTimer(Integer.parseInt(workout));
+        //manageTimer(Integer.parseInt(workout));
     }
 
     public void buttonResetClicked(View view){
@@ -99,10 +104,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void buttonPlayPauseClicked(View view){
+
+        manageTimer(Integer.parseInt(ready));
+        readyMode = true;
         countDownTimer.start();
-        String toSpeak = "Round One";
-        textToSpeech.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
-        playGong();
+        root.setBackgroundColor(getResources().getColor(android.R.color.holo_orange_light));
     }
 
     public void manageTimer(int seconds) {
@@ -113,40 +119,92 @@ public class MainActivity extends AppCompatActivity {
                 int minutes = seconds / 60;
                 seconds = seconds % 60;
                 textTimer.setText(String.format("%02d", minutes) + " " + String.format("%02d", seconds));
+                if(brakeMode){
+                    if(seconds<10){
+                        playGong();
+                    }
+                }
+                else if(readyMode){
+                    textToSpeech.speak(Integer.toString(seconds), TextToSpeech.QUEUE_FLUSH, null);
+                }
+                else{ // WorkoutMode
+                    if(seconds<10){
+                        playGong();
+                        root.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
+                    }
+                }
             }
 
             public void onFinish() {
-                playGong();
-                if (brakeMode) {
+
+                if(brakeMode){
+                    root.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
+                    playGong();
+                    brakeMode = false;
                     manageTimer(Integer.parseInt(brake));
                     countDownTimer.start();
-                    brakeMode = false;
-                    //root.setBackgroundColor(Color.RED);
-                } else {
-                    roundCounter++;
-                    String toSpeak;
-                    if (roundCounter == Integer.parseInt(round)) {
-                        toSpeak= "Round Final";
-                    }
-                    else {
-                         toSpeak = "Round " + Integer.toString(roundCounter);
-                    }
+                }
+                else{   // WorkoutMode
 
+                    String toSpeak = null;
+                    readyMode = false;
+                    root.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
 
-                    if (roundCounter > Integer.parseInt(round)) {
-                        countDownTimer.cancel();
-                    } else {
-
+                    if(roundCounter < Integer.parseInt(round)){
+                        playGong();
+                        toSpeak = "Round " + Integer.toString(roundCounter);
+                        brakeMode = true;
                         manageTimer(Integer.parseInt(workout));
                         countDownTimer.start();
-                        //root.setBackgroundColor(Color.GREEN);
+                        textRounds.setText("" + roundCounter + "/" +String.format("%01d", Integer.parseInt(round)));
+                    }
+                    else if(roundCounter == Integer.parseInt(round)){
+                        playGong();
+                        toSpeak = "Final Round ";
+                        brakeMode = false;
+                        manageTimer(Integer.parseInt(workout));
+                        countDownTimer.start();
+                        textRounds.setText("Round" + roundCounter + "/" +String.format("%01d", Integer.parseInt(round)));
+                    }
+                    else {
+                        countDownTimer.cancel();
                     }
 
                     textToSpeech.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
-                    brakeMode = true;
-                    textRounds.setText("" + roundCounter + "/" +String.format("%01d", Integer.parseInt(round)));
+                    roundCounter++;
                 }
             }
+//                playGong();
+//                if (brakeMode) {
+//                    manageTimer(Integer.parseInt(brake));
+//                    countDownTimer.start();
+//                    brakeMode = false;
+//                    //root.setBackgroundColor(Color.RED);
+//                } else {
+//                    roundCounter++;
+//                    String toSpeak;
+//                    if (roundCounter == Integer.parseInt(round)) {
+//                        toSpeak= "Round Final";
+//                    }
+//                    else {
+//                         toSpeak = "Round " + Integer.toString(roundCounter);
+//                    }
+//
+//
+//                    if (roundCounter > Integer.parseInt(round)) {
+//                        countDownTimer.cancel();
+//                    } else {
+//
+//                        manageTimer(Integer.parseInt(workout));
+//                        countDownTimer.start();
+//                        //root.setBackgroundColor(Color.GREEN);
+//                    }
+//
+//                    brakeMode = true;
+//                    textToSpeech.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+//                    textRounds.setText("" + roundCounter + "/" +String.format("%01d", Integer.parseInt(round)));
+//                }
+//            }
 
         };
     }
@@ -161,7 +219,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
 
     @Override
     public void onBackPressed() {
