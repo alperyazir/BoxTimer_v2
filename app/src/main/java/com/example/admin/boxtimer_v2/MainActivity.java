@@ -1,18 +1,20 @@
 package com.example.admin.boxtimer_v2;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
+import android.media.Image;
 import android.media.MediaPlayer;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,26 +24,27 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean doubleBackToExitPressedOnce = false;
 
-    private Button buttonReset;
-    private Button buttonSettings;
-    private Button buttonPlayPause;
+    private ImageButton buttonReset;
+    private ImageButton buttonSettings;
+    private ImageButton buttonPlayPause;
     private TextView textRounds;
     private TextView textTimer;
     private TextView textWork;
     private TextView textBrake;
 
     String round="3";
-    String workout="20";
+    String workout="30";
     String brake="15";
     String warning="10";
     String ready="5";
 
-    boolean brakeMode = false ;
+    boolean brakeMode;
     boolean readyMode;
+    boolean playMode = true;
     int roundCounter = 1;
 
 
-    private CountDownTimer countDownTimer;
+    private CountDownTimer countDownTimer = null;
     private TextToSpeech textToSpeech;
     View root ;
 
@@ -56,9 +59,9 @@ public class MainActivity extends AppCompatActivity {
         View someView = findViewById(R.id.activity_main);
         root = someView.getRootView();someView.getRootView();
 
-        buttonReset = (Button) findViewById(R.id.buttonReset);
-        buttonSettings = (Button) findViewById(R.id.buttonSettings);
-        buttonPlayPause = (Button) findViewById(R.id.buttonPlayPause);
+        buttonReset = (ImageButton) findViewById(R.id.buttonReset);
+        buttonSettings = (ImageButton) findViewById(R.id.buttonSettings);
+        buttonPlayPause = (ImageButton) findViewById(R.id.buttonPlayPause);
 
         textRounds = (TextView) findViewById(R.id.textRounds);
         textTimer = (TextView) findViewById(R.id.textTimer);
@@ -91,6 +94,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void buttonResetClicked(View view){
+        new AlertDialog.Builder(view.getContext(),1)
+                .setTitle("Reset")
+                .setMessage("Are you sure you reset timer?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        roundCounter = 1;
+                        textRounds.setText("" + roundCounter + "/" + String.format("%01d", Integer.parseInt(round)) );
+                        textTimer.setText(""+String.format("%02d", Integer.parseInt(workout)/60) +" "+ String.format("%02d", Integer.parseInt(workout)%60));
+                        root.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
+                        if(countDownTimer != null) countDownTimer.cancel();
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 
     public void buttonSettingsClicked(View view){
@@ -105,10 +127,17 @@ public class MainActivity extends AppCompatActivity {
 
     public void buttonPlayPauseClicked(View view){
 
+        if(playMode){
         manageTimer(Integer.parseInt(ready));
         readyMode = true;
+        brakeMode = false;
         countDownTimer.start();
         root.setBackgroundColor(getResources().getColor(android.R.color.holo_orange_light));
+        buttonPlayPause.setImageResource(R.drawable.pause);
+            playMode = false;
+        }else{
+            buttonPlayPause.setImageResource(R.drawable.play);
+        }
     }
 
     public void manageTimer(int seconds) {
@@ -119,18 +148,18 @@ public class MainActivity extends AppCompatActivity {
                 int minutes = seconds / 60;
                 seconds = seconds % 60;
                 textTimer.setText(String.format("%02d", minutes) + " " + String.format("%02d", seconds));
-                if(brakeMode){
-                    if(seconds<10){
+                if(brakeMode){ // Workout Interval
+                    if(seconds==10){
                         playGong();
+                        root.setBackgroundColor(getResources().getColor(android.R.color.holo_blue_light));
                     }
                 }
                 else if(readyMode){
                     textToSpeech.speak(Integer.toString(seconds), TextToSpeech.QUEUE_FLUSH, null);
                 }
-                else{ // WorkoutMode
-                    if(seconds<10){
+                else { // In brake Interval
+                    if(seconds==10){
                         playGong();
-                        root.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
                     }
                 }
             }
@@ -140,8 +169,8 @@ public class MainActivity extends AppCompatActivity {
                 if(brakeMode){
                     root.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
                     playGong();
-                    brakeMode = false;
                     manageTimer(Integer.parseInt(brake));
+                    brakeMode = false;
                     countDownTimer.start();
                 }
                 else{   // WorkoutMode
@@ -156,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
                         brakeMode = true;
                         manageTimer(Integer.parseInt(workout));
                         countDownTimer.start();
-                        textRounds.setText("" + roundCounter + "/" +String.format("%01d", Integer.parseInt(round)));
+                        textRounds.setText("Round " + roundCounter + "/" +String.format("%01d", Integer.parseInt(round)));
                     }
                     else if(roundCounter == Integer.parseInt(round)){
                         playGong();
@@ -164,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
                         brakeMode = false;
                         manageTimer(Integer.parseInt(workout));
                         countDownTimer.start();
-                        textRounds.setText("Round" + roundCounter + "/" +String.format("%01d", Integer.parseInt(round)));
+                        textRounds.setText("Round " + roundCounter + "/" +String.format("%01d", Integer.parseInt(round)));
                     }
                     else {
                         countDownTimer.cancel();
@@ -208,6 +237,7 @@ public class MainActivity extends AppCompatActivity {
 
         };
     }
+
     public void playGong() {
         MediaPlayer mp = MediaPlayer.create(this,R.raw.gong );
         mp.start();

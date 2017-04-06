@@ -76,7 +76,7 @@ public class SettingsActivity extends AppCompatActivity implements EditTimeFragm
         if(extras !=null) {
             textRound.setText(extras.getString("round"));
             textWorkout.setText(String.format("%02d", Integer.parseInt(extras.getString("workout"))/60) + ":" + String.format("%02d", Integer.parseInt(extras.getString("workout"))%60 ));
-            textBrake.setText(String.format("%02d", Integer.parseInt(extras.getString("brake"))/60) + ":" + String.format("%02d", Integer.parseInt(extras.getString("workout"))%60 ));
+            textBrake.setText(String.format("%02d", Integer.parseInt(extras.getString("brake"))/60) + ":" + String.format("%02d", Integer.parseInt(extras.getString("brake"))%60 ));
             textWarning.setText(String.format("%02d", Integer.parseInt(extras.getString("warning"))/60) + ":" + String.format("%02d", Integer.parseInt(extras.getString("warning"))%60));
             textReady.setText(String.format("%02d", Integer.parseInt(extras.getString("ready"))/60) + ":" + String.format("%02d", Integer.parseInt(extras.getString("ready"))%60 ));
         }
