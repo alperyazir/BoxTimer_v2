@@ -8,19 +8,25 @@ import android.media.MediaPlayer;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.speech.tts.TextToSpeech;
+import android.support.annotation.IntegerRes;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Locale;
+import com.example.admin.boxtimer_v2.ReadyAnimation.CountDownListener;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements CountDownListener{
 
     private boolean doubleBackToExitPressedOnce = false;
 
@@ -36,22 +42,27 @@ public class MainActivity extends AppCompatActivity {
     String workout="30";
     String brake="15";
     String warning="10";
-    String ready="5";
+    String ready="3";
 
     boolean brakeMode;
     boolean readyMode;
     boolean playMode = true;
     int roundCounter = 1;
+    int pauseTime;
+    boolean isPaused = false;
 
 
     private CountDownTimer countDownTimer = null;
     private TextToSpeech textToSpeech;
     View root ;
 
+    private ReadyAnimation readyAni;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN
+                | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -85,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        textRounds.setText("" + roundCounter + "/" + String.format("%01d", Integer.parseInt(round)) );
+        textRounds.setText("Round " + roundCounter + "/" + String.format("%01d", Integer.parseInt(round)) );
         textWork.setText("Work " + String.format("%02d", Integer.parseInt(workout)/60) +":"+ String.format("%02d", Integer.parseInt(workout)%60));
         textBrake.setText("Brake "+String.format("%02d", Integer.parseInt(brake)/60) +":"+ String.format("%02d", Integer.parseInt(brake)%60));
         textTimer.setText(""+String.format("%02d", Integer.parseInt(workout)/60) +" "+ String.format("%02d", Integer.parseInt(workout)%60));
@@ -100,9 +111,11 @@ public class MainActivity extends AppCompatActivity {
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         roundCounter = 1;
+                        playMode = true;
                         textRounds.setText("" + roundCounter + "/" + String.format("%01d", Integer.parseInt(round)) );
                         textTimer.setText(""+String.format("%02d", Integer.parseInt(workout)/60) +" "+ String.format("%02d", Integer.parseInt(workout)%60));
                         root.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
+                        buttonPlayPause.setImageResource(R.drawable.play);
                         if(countDownTimer != null) countDownTimer.cancel();
                     }
                 })
@@ -128,15 +141,24 @@ public class MainActivity extends AppCompatActivity {
     public void buttonPlayPauseClicked(View view){
 
         if(playMode){
-        manageTimer(Integer.parseInt(ready));
-        readyMode = true;
-        brakeMode = false;
-        countDownTimer.start();
-        root.setBackgroundColor(getResources().getColor(android.R.color.holo_orange_light));
-        buttonPlayPause.setImageResource(R.drawable.pause);
-            playMode = false;
+            initCountDownAnimation();
+            startCountDownAnimation(2);
+           //manageTimer(Integer.parseInt(ready));
+           playMode = false;
+           readyMode = true;
+           brakeMode = false;
+           //countDownTimer.start();
+           if(Integer.parseInt(ready) > 0)
+               root.setBackgroundColor(getResources().getColor(android.R.color.holo_orange_light));
+           buttonPlayPause.setImageResource(R.drawable.pause);
+
         }else{
+            isPaused = true;
+            playMode = true;
+            String str = textTimer.getText().toString();
+            pauseTime = Integer.parseInt(""+ str.charAt(0)+str.charAt(1))*60 + Integer.parseInt(""+ str.charAt(3)+str.charAt(4));
             buttonPlayPause.setImageResource(R.drawable.play);
+            countDownTimer.cancel();
         }
     }
 
@@ -150,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
                 textTimer.setText(String.format("%02d", minutes) + " " + String.format("%02d", seconds));
                 if(brakeMode){ // Workout Interval
                     if(seconds==10){
-                        playGong();
+                        playGong(1);
                         root.setBackgroundColor(getResources().getColor(android.R.color.holo_blue_light));
                     }
                 }
@@ -159,48 +181,69 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else { // In brake Interval
                     if(seconds==10){
-                        playGong();
+                        playGong(1);
                     }
                 }
             }
 
             public void onFinish() {
 
-                if(brakeMode){
-                    root.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
-                    playGong();
-                    manageTimer(Integer.parseInt(brake));
+                if(Integer.parseInt(brake) > 0 && brakeMode){
                     brakeMode = false;
+                    root.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
+                    playGong(0);
+                    manageTimer(Integer.parseInt(brake));
                     countDownTimer.start();
+
+                }
+                else if(readyMode){
+                    cancelCountDownAnimation();
+
                 }
                 else{   // WorkoutMode
 
                     String toSpeak = null;
+                    textRounds.setText("Round " + roundCounter + "/" +String.format("%01d", Integer.parseInt(round)));
                     readyMode = false;
-                    root.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
 
                     if(roundCounter < Integer.parseInt(round)){
-                        playGong();
+                        playGong(0);
                         toSpeak = "Round " + Integer.toString(roundCounter);
                         brakeMode = true;
-                        manageTimer(Integer.parseInt(workout));
+                        if(isPaused){
+                            manageTimer(pauseTime);
+                            isPaused = false;
+                        }
+                        else{
+                            manageTimer(Integer.parseInt(workout));
+                            textToSpeech.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+                            roundCounter++;
+                        }
                         countDownTimer.start();
-                        textRounds.setText("Round " + roundCounter + "/" +String.format("%01d", Integer.parseInt(round)));
                     }
                     else if(roundCounter == Integer.parseInt(round)){
-                        playGong();
+                        playGong(0);
                         toSpeak = "Final Round ";
-                        brakeMode = false;
-                        manageTimer(Integer.parseInt(workout));
-                        countDownTimer.start();
                         textRounds.setText("Round " + roundCounter + "/" +String.format("%01d", Integer.parseInt(round)));
+                        brakeMode = true;
+                        if(isPaused){
+                            manageTimer(pauseTime);
+                            isPaused = false;
+                        }
+                        else{
+                            manageTimer(Integer.parseInt(workout));
+                            textToSpeech.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+                            roundCounter++;
+                        }
+                        countDownTimer.start();
+
+
                     }
                     else {
                         countDownTimer.cancel();
                     }
+                    root.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
 
-                    textToSpeech.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
-                    roundCounter++;
                 }
             }
 //                playGong();
@@ -238,8 +281,13 @@ public class MainActivity extends AppCompatActivity {
         };
     }
 
-    public void playGong() {
-        MediaPlayer mp = MediaPlayer.create(this,R.raw.gong );
+    public void playGong(int i) {
+        MediaPlayer mp = null;
+        if(i == 0) {
+            mp = MediaPlayer.create(this, R.raw.gong);
+        }else if(i == 1) {
+            mp = MediaPlayer.create(this, R.raw.warning);
+        }
         mp.start();
         mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 
@@ -267,5 +315,54 @@ public class MainActivity extends AppCompatActivity {
                 doubleBackToExitPressedOnce=false;
             }
         }, 2000);
+    }
+
+    private void initCountDownAnimation() {
+        readyAni = new ReadyAnimation(textRounds, Integer.parseInt(ready));
+        readyAni.setCountDownListener(this);
+    }
+
+    private void startCountDownAnimation(int i) {
+        // Customizable animation
+        if (i == 1) { // Scale
+            // Use scale animation
+            Animation scaleAnimation = new ScaleAnimation(1.0f, 0.0f, 1.0f,
+                    0.0f, Animation.RELATIVE_TO_SELF, 0.5f,
+                    Animation.RELATIVE_TO_SELF, 0.5f);
+            readyAni.setAnimation(scaleAnimation);
+        } else if (i == 2) { // Set (Scale +
+            // Alpha)
+            // Use a set of animations
+            Animation scaleAnimation = new ScaleAnimation(1.0f, 0.0f, 1.0f,
+                    0.0f, Animation.RELATIVE_TO_SELF, 0.5f,
+                    Animation.RELATIVE_TO_SELF, 0.5f);
+            Animation alphaAnimation = new AlphaAnimation(1.0f, 0.0f);
+            AnimationSet animationSet = new AnimationSet(false);
+            animationSet.addAnimation(scaleAnimation);
+            animationSet.addAnimation(alphaAnimation);
+            readyAni.setAnimation(animationSet);
+        }
+
+        // Customizable start count
+        readyAni.setStartCount(Integer.parseInt(ready));
+
+        readyAni.start();
+    }
+
+    private void cancelCountDownAnimation() {
+        readyAni.cancel();
+    }
+
+    /**
+     * Notifies the end of the count down animation.
+     *
+     * @param animation The count down animation which reached its end.
+     */
+    @Override
+    public void onCountDownEnd(ReadyAnimation animation) {
+
+        manageTimer(Integer.parseInt(workout));
+        countDownTimer.start();
+        readyMode = false;
     }
 }
