@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements CountDownListener
     private TextView textTimer;
     private TextView textWork;
     private TextView textBrake;
+    private TextView textReady;
 
     String round="3";
     String workout="30";
@@ -78,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements CountDownListener
         textTimer = (TextView) findViewById(R.id.textTimer);
         textWork = (TextView) findViewById(R.id.textWorkout);
         textBrake = (TextView) findViewById(R.id.textBrake);
+        textReady = (TextView) findViewById(R.id.textReady);
 
         Bundle extras = getIntent().getExtras();
         if(extras !=null) {
@@ -141,16 +143,16 @@ public class MainActivity extends AppCompatActivity implements CountDownListener
     public void buttonPlayPauseClicked(View view){
 
         if(playMode){
-            initCountDownAnimation();
-            startCountDownAnimation(2);
-           //manageTimer(Integer.parseInt(ready));
+
            playMode = false;
            readyMode = true;
-           brakeMode = false;
-           //countDownTimer.start();
+           brakeMode = true;
+
            if(Integer.parseInt(ready) > 0)
                root.setBackgroundColor(getResources().getColor(android.R.color.holo_orange_light));
            buttonPlayPause.setImageResource(R.drawable.pause);
+            initCountDownAnimation();
+            startCountDownAnimation(2);
 
         }else{
             isPaused = true;
@@ -174,11 +176,8 @@ public class MainActivity extends AppCompatActivity implements CountDownListener
                     if(seconds==10){
                         playGong(1);
                         root.setBackgroundColor(getResources().getColor(android.R.color.holo_blue_light));
-                    }
                 }
-                else if(readyMode){
-                    textToSpeech.speak(Integer.toString(seconds), TextToSpeech.QUEUE_FLUSH, null);
-                }
+            }
                 else { // In brake Interval
                     if(seconds==10){
                         playGong(1);
@@ -194,10 +193,6 @@ public class MainActivity extends AppCompatActivity implements CountDownListener
                     playGong(0);
                     manageTimer(Integer.parseInt(brake));
                     countDownTimer.start();
-
-                }
-                else if(readyMode){
-                    cancelCountDownAnimation();
 
                 }
                 else{   // WorkoutMode
@@ -246,38 +241,6 @@ public class MainActivity extends AppCompatActivity implements CountDownListener
 
                 }
             }
-//                playGong();
-//                if (brakeMode) {
-//                    manageTimer(Integer.parseInt(brake));
-//                    countDownTimer.start();
-//                    brakeMode = false;
-//                    //root.setBackgroundColor(Color.RED);
-//                } else {
-//                    roundCounter++;
-//                    String toSpeak;
-//                    if (roundCounter == Integer.parseInt(round)) {
-//                        toSpeak= "Round Final";
-//                    }
-//                    else {
-//                         toSpeak = "Round " + Integer.toString(roundCounter);
-//                    }
-//
-//
-//                    if (roundCounter > Integer.parseInt(round)) {
-//                        countDownTimer.cancel();
-//                    } else {
-//
-//                        manageTimer(Integer.parseInt(workout));
-//                        countDownTimer.start();
-//                        //root.setBackgroundColor(Color.GREEN);
-//                    }
-//
-//                    brakeMode = true;
-//                    textToSpeech.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
-//                    textRounds.setText("" + roundCounter + "/" +String.format("%01d", Integer.parseInt(round)));
-//                }
-//            }
-
         };
     }
 
@@ -318,11 +281,12 @@ public class MainActivity extends AppCompatActivity implements CountDownListener
     }
 
     private void initCountDownAnimation() {
-        readyAni = new ReadyAnimation(textRounds, Integer.parseInt(ready));
+        readyAni = new ReadyAnimation(textReady, Integer.parseInt(ready));
         readyAni.setCountDownListener(this);
     }
 
     private void startCountDownAnimation(int i) {
+        textTimer.setVisibility(View.INVISIBLE);
         // Customizable animation
         if (i == 1) { // Scale
             // Use scale animation
@@ -360,9 +324,13 @@ public class MainActivity extends AppCompatActivity implements CountDownListener
      */
     @Override
     public void onCountDownEnd(ReadyAnimation animation) {
-
+        textTimer.setVisibility(View.VISIBLE);
         manageTimer(Integer.parseInt(workout));
         countDownTimer.start();
+        root.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
+        textToSpeech.speak("Round " + Integer.toString(roundCounter),TextToSpeech.QUEUE_FLUSH, null);
+        playGong(0);
         readyMode = false;
+
     }
 }
